@@ -7,7 +7,7 @@ spring:
 
   datasource:
     platform: mysql
-    url:  jdbc:mysql://udemy-study.clhr4mydwpui.ap-northeast-2.rds.amazonaws.com:3306/UdemyStudy?autoReconnect=true # 변경해주세요
+    url:  jdbc:mysql://udemy-study.clhr4mydwpui.ap-northeast-2.rds.amazonaws.com/UdemyStudy?autoReconnect=true # 변경해주세요
     username: admin
     password: 2503wjdgus
     driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전
