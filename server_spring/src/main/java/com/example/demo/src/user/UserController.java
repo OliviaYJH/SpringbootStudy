@@ -133,4 +133,17 @@ public class UserController {
         }
     }
 
+    @ResponseBody
+    @PatchMapping("/{userIdx}/status") // (PATCH) 127.0.0.1:9000/users/:userIdx/status
+    public BaseResponse<String> patchUser(@PathVariable("userIdx") int userIdx){
+        try{
+            userService.patchUser(userIdx);
+
+            String result = "유저 삭제에 성공했습니다";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
 }

@@ -71,4 +71,15 @@ public class UserService {
         }
     }
 
+    public void patchUser(Integer userIdx) throws BaseException{
+        try{
+            int result = userDao.patchUser(userIdx);
+            if(result == 0){
+                throw new BaseException(PATCH_FAIL_USER);
+            }
+        }catch (Exception exception){
+            throw new BaseException(PATCH_FAIL_USER);
+        }
+    }
+
 }

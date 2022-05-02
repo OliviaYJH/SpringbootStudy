@@ -22,7 +22,7 @@ public class UserDao {
     }
 
     public List<GetUserRes> getUsers(){
-        String getUsersQuery = "select userIdx,name,nickName,email from User";
+        String getUsersQuery = "select userIdx,name,nickName,email from User where status = 'ACTIVE' ";
         return this.jdbcTemplate.query(getUsersQuery,
                 (rs,rowNum) -> new GetUserRes(
                         rs.getInt("userIdx"),
@@ -35,7 +35,7 @@ public class UserDao {
 
     public GetUserRes getUsersByEmail(String email){
         // GetUserRes 모델에 필요한 값 출력하도록 query문 작성
-        String getUsersByEmailQuery = "select userIdx,name,nickName,email from User where email=?";
+        String getUsersByEmailQuery = "select userIdx,name,nickName,email from User where email=? and status = 'ACTIVE' ";
         String getUsersByEmailParams = email; // ?에 들어갈 parameter / ?가 여러개인 경우, 리스트로 관리
         return this.jdbcTemplate.queryForObject(getUsersByEmailQuery,
                 (rs, rowNum) -> new GetUserRes(
@@ -49,7 +49,7 @@ public class UserDao {
 
 
     public GetUserRes getUsersByIdx(int userIdx){
-        String getUsersByIdxQuery = "select userIdx,name,nickName,email from User where userIdx=?";
+        String getUsersByIdxQuery = "select userIdx,name,nickName,email from User where userIdx=? and status = 'ACTIVE' ";
         int getUsersByIdxParams = userIdx;
         return this.jdbcTemplate.queryForObject(getUsersByIdxQuery,
                 (rs, rowNum) -> new GetUserRes(
@@ -85,7 +85,10 @@ public class UserDao {
         return this.jdbcTemplate.update(modifyUserNameQuery,modifyUserNameParams);
     }
 
-
+    public int patchUser(Integer userIdx){
+        String patchUserQuery = "update User set status = 'DELETED' where userIdx = ? ";
+        return this.jdbcTemplate.update(patchUserQuery, userIdx);
+    }
 
 
 }
