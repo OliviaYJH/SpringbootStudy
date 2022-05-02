@@ -71,6 +71,7 @@ public class UserController {
             GetUserRes getUsersRes = userProvider.getUsersByIdx(userIdx);
             return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
+            logger.error("Error!", exception);
             return new BaseResponse<>((exception.getStatus()));
         }
     }

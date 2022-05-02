@@ -45,6 +45,7 @@ public class UserProvider {
             return getUsersRes;
         }
         catch (Exception exception) {
+            logger.error("Error!", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
