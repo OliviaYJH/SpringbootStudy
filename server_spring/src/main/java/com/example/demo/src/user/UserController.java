@@ -65,15 +65,17 @@ public class UserController {
         }
     }
 
+    // 특정 user 조회 api
     @ResponseBody
     @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/users/:userIdx
-    public BaseResponse<GetUserRes> getUserByIdx(@PathVariable("userIdx")int userIdx) {
+    public BaseResponse<GetUserRes> getUserByUserIdx(@PathVariable("userIdx")int userIdx) { // path variable 사용
+        // 반환값, 응답값: GetUserRes
         try{
 
-            GetUserRes getUsersRes = userProvider.getUsersByIdx(userIdx);
+            GetUserRes getUsersRes = userProvider.getUsersByIdx(userIdx); // provider에 이메일을 넘김
+            // 조회 - provider에서 처리 / 생성 - service에서 생성
             return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
-            logger.error("Error!", exception);
             return new BaseResponse<>((exception.getStatus()));
         }
     }
