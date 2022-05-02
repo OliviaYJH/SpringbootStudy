@@ -30,11 +30,13 @@ public class UserDao {
                         rs.getString("nickName"),
                         rs.getString("email")
                 ));
+        // query 사용 - List로 반환하고 있기 때문에
     }
 
     public GetUserRes getUsersByEmail(String email){
+        // GetUserRes 모델에 필요한 값 출력하도록 query문 작성
         String getUsersByEmailQuery = "select userIdx,name,nickName,email from User where email=?";
-        String getUsersByEmailParams = email;
+        String getUsersByEmailParams = email; // ?에 들어갈 parameter / ?가 여러개인 경우, 리스트로 관리
         return this.jdbcTemplate.queryForObject(getUsersByEmailQuery,
                 (rs, rowNum) -> new GetUserRes(
                         rs.getInt("userIdx"),
@@ -42,6 +44,7 @@ public class UserDao {
                         rs.getString("nickName"),
                         rs.getString("email")),
                 getUsersByEmailParams);
+        // queryForObject 사용 - 하나의 객체만 return 할 때 사용
     }
 
 
@@ -66,7 +69,7 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
     }
 
-    public int checkEmail(String email){
+    public int checkEmail(String email){ // 이메일이 존재하는지 확인
         String checkEmailQuery = "select exists(select email from User where email = ?)";
         String checkEmailParams = email;
         return this.jdbcTemplate.queryForObject(checkEmailQuery,

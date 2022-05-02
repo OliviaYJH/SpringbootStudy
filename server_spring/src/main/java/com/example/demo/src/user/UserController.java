@@ -14,7 +14,7 @@ import static com.example.demo.config.BaseResponseStatus.POST_USERS_INVALID_EMAI
 import static com.example.demo.utils.ValidationRegex.isRegexEmail;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/users") // api uri 앞에 공통적으로 들어감
 public class UserController {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -45,8 +45,9 @@ public class UserController {
      */
     //Query String
     @ResponseBody
-    @GetMapping("") // (GET) 127.0.0.1:9000/users
-    public BaseResponse<GetUserRes> getUsers(@RequestParam(required = true) String Email) {
+    @GetMapping("") // (GET) 127.0.0.1:9000/users   GetMapping -> Get 메소드
+    public BaseResponse<GetUserRes> getUsers(@RequestParam(required = true) String Email) { // query string으로 받음
+        // 반환값, 응답값: GetUserRes
         try{
             // TODO: email 관련한 짧은 validation 예시입니다. 그 외 더 부가적으로 추가해주세요!
             if(Email.length()==0){
@@ -56,7 +57,8 @@ public class UserController {
             if(!isRegexEmail(Email)){
                 return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
             }
-            GetUserRes getUsersRes = userProvider.getUsersByEmail(Email);
+            GetUserRes getUsersRes = userProvider.getUsersByEmail(Email); // provider에 이메일을 넘김
+            // 조회 - provider에서 처리 / 생성 - service에서 생성
             return new BaseResponse<>(getUsersRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));

@@ -28,9 +28,9 @@ public class UserProvider {
     }
 
 
-    public GetUserRes getUsersByEmail(String email) throws BaseException{
+    public GetUserRes getUsersByEmail(String email) throws BaseException{ // 이메일 받기
         try{
-            GetUserRes getUsersRes = userDao.getUsersByEmail(email);
+            GetUserRes getUsersRes = userDao.getUsersByEmail(email); // dao로 넘김
             return getUsersRes;
         }
         catch (Exception exception) {
@@ -53,7 +53,7 @@ public class UserProvider {
 
     public int checkEmail(String email) throws BaseException{
         try{
-            return userDao.checkEmail(email);
+            return userDao.checkEmail(email); // dao에서 이메일 전달받음
         } catch (Exception exception){
             throw new BaseException(DATABASE_ERROR);
         }

@@ -35,10 +35,12 @@ public class UserService {
 
 
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
+        // 의미적 validation 처리
         // 이메일 중복 확인
         if(userProvider.checkEmail(postUserReq.getEmail()) ==1){
             throw new BaseException(POST_USERS_EXISTS_EMAIL);
         }
+        // 이때 dao가 아니라 provider로 넘기고 있음 - 무언가를 체크하는 것은 조회의 의미를 가짐
 
         String pwd;
         try{
