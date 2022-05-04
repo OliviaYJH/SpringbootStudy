@@ -71,6 +71,7 @@ public class UserService {
         }
     }
 
+    // 유저 삭제
     public void patchUser(Integer userIdx) throws BaseException{
         try{
             int result = userDao.patchUser(userIdx);

@@ -36,30 +36,15 @@ public class UserController {
 
 
 
-    /**
-     * 회원 조회 API
-     * [GET] /users
-     * 이메일 검색 조회 API
-     * [GET] /users? Email=
-     * @return BaseResponse<GetUserRes>
-     */
-    //Query String
     @ResponseBody
-    @GetMapping("") // (GET) 127.0.0.1:9000/users   GetMapping -> Get 메소드
-    public BaseResponse<GetUserRes> getUsers(@RequestParam(required = true) String Email) { // query string으로 받음
+    @GetMapping("")
+    public BaseResponse<GetUserFeedRes> getUserFeed(@PathVariable("userIdx")int userIdx) { // query string으로 받음
         // 반환값, 응답값: GetUserRes
         try{
-            // TODO: email 관련한 짧은 validation 예시입니다. 그 외 더 부가적으로 추가해주세요!
-            if(Email.length()==0){
-                return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
-            }
-            // 이메일 정규표현
-            if(!isRegexEmail(Email)){
-                return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
-            }
-            GetUserRes getUsersRes = userProvider.getUsersByEmail(Email); // provider에 이메일을 넘김
+
+            GetUserFeedRes getUserFeedRes = userProvider.retrieveUserFeed(userIdx, userIdx); // provider에 이메일을 넘김
             // 조회 - provider에서 처리 / 생성 - service에서 생성
-            return new BaseResponse<>(getUsersRes);
+            return new BaseResponse<>(getUserFeedRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
@@ -133,6 +118,7 @@ public class UserController {
         }
     }
 
+    // 유저 삭제 api
     @ResponseBody
     @PatchMapping("/{userIdx}/status") // (PATCH) 127.0.0.1:9000/users/:userIdx/status
     public BaseResponse<String> patchUser(@PathVariable("userIdx") int userIdx){

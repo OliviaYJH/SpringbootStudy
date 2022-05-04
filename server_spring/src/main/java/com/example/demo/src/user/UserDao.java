@@ -1,9 +1,7 @@
 package com.example.demo.src.user;
 
 
-import com.example.demo.src.user.model.GetUserRes;
-import com.example.demo.src.user.model.PatchUserReq;
-import com.example.demo.src.user.model.PostUserReq;
+import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -21,17 +19,35 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<GetUserRes> getUsers(){
-        String getUsersQuery = "select userIdx,name,nickName,email from User where status = 'ACTIVE' ";
-        return this.jdbcTemplate.query(getUsersQuery,
-                (rs,rowNum) -> new GetUserRes(
-                        rs.getInt("userIdx"),
-                        rs.getString("name"),
+    // 유저 정보
+    public GetUserInfoRes selectUserInfo(int userIdx){
+        String getUsersQuery = "select u.userIdx  as userIdx, u.nickName as nickName, u.profileImgUrl as profileImgUrl, u.website as website, u.introduce as introduction,\n" +
+                "    If(postCount is null, 0, postCount) as postCount\n" +
+                "from User as u\n" +
+                "    left join (select userIdx, count(postIdx) as postCount from Post where status = 'ACTIVE' group by userIdx) p on p.userIdx = u.userIdx\n" +
+                "    left join (select followerIdx, count(followIdx) as followerCount from Follow where status = 'ACTIVE' group by followerIdx) fc on fc.followerIdx = u.userIdx\n" +
+                "    left join (select followeeIdx, count(followIdx) as followingCount from Follow where status = 'ACTIVE' group by followeeIdx) f on f.followeeIdx = u.userIdx\n" +
+                "where u.userIdx = ? and u.status = 'ACTIVE'";
+
+        int selectUserInfoParam = userIdx;
+
+        return this.jdbcTemplate.queryForObject(getUsersQuery, // 리스트 -> query, 아니면 queryForObject
+                (rs,rowNum) -> new GetUserInfoRes(
+                        // 모델과 동일 순서로 넣어주어야 함!
                         rs.getString("nickName"),
-                        rs.getString("email")
-                ));
+                        rs.getString("name"),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("website"),
+                        rs.getString("introduction"),
+                        rs.getInt("followerCount"),
+                        rs.getInt("followingCount"),
+                        rs.getInt("postCount")
+                ), selectUserInfoParam);
         // query 사용 - List로 반환하고 있기 때문에
     }
+
+    // 게시글 리스트
+    
 
     public GetUserRes getUsersByEmail(String email){
         // GetUserRes 모델에 필요한 값 출력하도록 query문 작성

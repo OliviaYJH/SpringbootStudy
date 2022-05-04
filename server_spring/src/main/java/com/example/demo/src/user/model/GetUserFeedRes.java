@@ -10,10 +10,9 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-public class GetUserRes {
-    private int userIdx;
-    private String name;
-    private String nickName;
-    private String email;
+public class GetUserFeedRes {
+    private boolean _isMyFeed;
+    private GetUserInfoRes getUserInfo;
+    private List<GetUserPostsRes> getUserPosts;
 
 }
