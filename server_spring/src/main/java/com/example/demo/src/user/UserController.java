@@ -37,22 +37,23 @@ public class UserController {
 
 
     @ResponseBody
-    @GetMapping("")
-    public BaseResponse<GetUserFeedRes> getUserFeed(@PathVariable("userIdx")int userIdx) { // query string으로 받음
+    @GetMapping("/{userIdx}")
+    public BaseResponse<GetUserFeedRes> getUserFeed(@PathVariable("userIdx")int userIdx) {
         // 반환값, 응답값: GetUserRes
         try{
 
-            GetUserFeedRes getUserFeedRes = userProvider.retrieveUserFeed(userIdx, userIdx); // provider에 이메일을 넘김
+            GetUserFeedRes getUserFeedRes = userProvider.retrieveUserFeed(userIdx, userIdx);
             // 조회 - provider에서 처리 / 생성 - service에서 생성
             return new BaseResponse<>(getUserFeedRes);
         } catch(BaseException exception){
+            logger.error("Error!", exception);
             return new BaseResponse<>((exception.getStatus()));
         }
     }
 
     // 특정 user 조회 api
     @ResponseBody
-    @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/users/:userIdx
+    @GetMapping("/{userIdx}/X") // (GET) 127.0.0.1:9000/users/:userIdx 임시
     public BaseResponse<GetUserRes> getUserByUserIdx(@PathVariable("userIdx")int userIdx) { // path variable 사용
         // 반환값, 응답값: GetUserRes
         try{

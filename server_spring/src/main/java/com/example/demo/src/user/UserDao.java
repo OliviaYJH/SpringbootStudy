@@ -21,8 +21,10 @@ public class UserDao {
 
     // 유저 정보
     public GetUserInfoRes selectUserInfo(int userIdx){
-        String getUsersQuery = "select u.userIdx  as userIdx, u.nickName as nickName, u.profileImgUrl as profileImgUrl, u.website as website, u.introduce as introduction,\n" +
-                "    If(postCount is null, 0, postCount) as postCount\n" +
+        String selectUsersInfoQuery = "select u.userIdx  as userIdx, u.nickName as nickName, u.name as name, u.profileImgUrl as profileImgUrl, u.website as website, u.introduce as introduction,\n" +
+                "    If(postCount is null, 0, postCount) as postCount,\n" +
+                "    If(followerCount is null, 0, followerCount) as followerCount,\n"+
+                "    If(followingCount is null, 0, followingCount) as followingCount\n"+
                 "from User as u\n" +
                 "    left join (select userIdx, count(postIdx) as postCount from Post where status = 'ACTIVE' group by userIdx) p on p.userIdx = u.userIdx\n" +
                 "    left join (select followerIdx, count(followIdx) as followerCount from Follow where status = 'ACTIVE' group by followerIdx) fc on fc.followerIdx = u.userIdx\n" +
@@ -31,7 +33,7 @@ public class UserDao {
 
         int selectUserInfoParam = userIdx;
 
-        return this.jdbcTemplate.queryForObject(getUsersQuery, // 리스트 -> query, 아니면 queryForObject
+        return this.jdbcTemplate.queryForObject(selectUsersInfoQuery, // 리스트 -> query, 아니면 queryForObject
                 (rs,rowNum) -> new GetUserInfoRes(
                         // 모델과 동일 순서로 넣어주어야 함!
                         rs.getString("nickName"),
@@ -43,11 +45,30 @@ public class UserDao {
                         rs.getInt("followingCount"),
                         rs.getInt("postCount")
                 ), selectUserInfoParam);
-        // query 사용 - List로 반환하고 있기 때문에
     }
 
     // 게시글 리스트
-    
+    public List<GetUserPostsRes> selectUserPosts(int userIdx){
+        String selectUserPostsQuery = "select p.postIdx as postIdx, pi.imgUrl as postImgUrl\n" +
+                "from Post as p\n" +
+                "    join PostImgUrl as pi on pi.postIdx = p.postIdx and pi.status = 'ACTIVE'\n" +
+                "    join User as u on u.userIdx = p.userIdx\n" +
+                "where p.status = 'ACTIVE' and u.userIdx = ?\n" +
+                "group by p.postIdx\n" +
+                "HAVING min(pi.postImgUrlIdx)\n" +
+                "order by p.postIdx;";
+
+
+        int selectUserPostsParam = userIdx;
+
+        return this.jdbcTemplate.query(selectUserPostsQuery, // 리스트 -> query, 아니면 queryForObject
+                (rs,rowNum) -> new GetUserPostsRes(
+                        // 모델과 동일 순서로 넣어주어야 함!
+                        rs.getInt("postIdx"),
+                        rs.getString("postImgUrl")
+                ), selectUserPostsParam);
+        // query 사용 - List로 반환하고 있기 때문에
+    }
 
     public GetUserRes getUsersByEmail(String email){
         // GetUserRes 모델에 필요한 값 출력하도록 query문 작성
@@ -91,6 +112,16 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(checkEmailQuery,
                 int.class,
                 checkEmailParams);
+
+    }
+
+    // userIdx가 유효한지 validation
+    public int checkUserExist(int userIdx){
+        String checkUserExistQuery = "select exists(select userIdx from User where userIdx = ?)";
+        int checkUserExistParams = userIdx;
+        return this.jdbcTemplate.queryForObject(checkUserExistQuery,
+                int.class,
+                checkUserExistParams);
 
     }
 
