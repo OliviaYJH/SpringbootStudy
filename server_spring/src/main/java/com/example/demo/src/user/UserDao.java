@@ -21,7 +21,7 @@ public class UserDao {
 
     // 유저 정보
     public GetUserInfoRes selectUserInfo(int userIdx){
-        String selectUsersInfoQuery = "select u.userIdx  as userIdx, u.nickName as nickName, u.name as name, u.profileImgUrl as profileImgUrl, u.website as website, u.introduce as introduction,\n" +
+        String selectUsersInfoQuery = "select u.userIdx  as userIdx, u.nickName as nickName, u.name as name, u.profileImgUrl as profileImgUrl, u.website as website, u.introduction as introduction,\n" +
                 "    If(postCount is null, 0, postCount) as postCount,\n" +
                 "    If(followerCount is null, 0, followerCount) as followerCount,\n"+
                 "    If(followingCount is null, 0, followingCount) as followingCount\n"+
