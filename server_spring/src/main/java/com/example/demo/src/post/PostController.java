@@ -3,6 +3,8 @@ package com.example.demo.src.post;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.post.model.GetPostsRes;
+import com.example.demo.src.post.model.PostPostsReq;
+import com.example.demo.src.post.model.PostPostsRes;
 import com.example.demo.src.user.UserProvider;
 import com.example.demo.src.user.UserService;
 import com.example.demo.src.user.model.GetUserFeedRes;
@@ -13,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.example.demo.config.BaseResponseStatus.POST_POSTS_EMPTY_IMGURL;
+import static com.example.demo.config.BaseResponseStatus.POST_POSTS_INVALID_CONTENTS;
 
 @RestController
 @RequestMapping("/posts")
@@ -48,5 +53,30 @@ public class PostController {
         }
     }
 
+
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<PostPostsRes> createPosts(@RequestBody PostPostsReq postPostsReq) { // 생성한 글의 postIdx 반환
+        // 반환값, 응답값: GetUserRes
+        try{
+            // 형식적 validation 처리
+            if(postPostsReq.getContent().length() > 450){ // 게시글 길이 제한
+                return new BaseResponse<>(POST_POSTS_INVALID_CONTENTS);
+            }
+
+            // 이미지 없는 경우
+            if(postPostsReq.getPostImgUrls().size() < 1){
+                return new BaseResponse<>(POST_POSTS_EMPTY_IMGURL);
+            }
+
+            // 조회 - provider에서 처리 / 생성 - service에서 생성
+            PostPostsRes postPostsRes = postService.createPosts(postPostsReq.getUserIdx(), postPostsReq);
+            // 받은 body에서 userIdx 값과 postPostsReq를 service에 넘김김 - 이후 jwt로 userIdx를 받아올거기 때문에 그때 편리하게 하기 위해
+            return new BaseResponse<>(postPostsRes);
+        } catch(BaseException exception){
+            logger.error("Error!", exception);
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 
 }
