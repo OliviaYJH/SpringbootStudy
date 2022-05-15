@@ -3,6 +3,7 @@ package com.example.demo.src.post;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.post.model.GetPostsRes;
+import com.example.demo.src.post.model.PatchPostsReq;
 import com.example.demo.src.post.model.PostPostsReq;
 import com.example.demo.src.post.model.PostPostsRes;
 import com.example.demo.src.user.UserProvider;
@@ -73,6 +74,28 @@ public class PostController {
             PostPostsRes postPostsRes = postService.createPosts(postPostsReq.getUserIdx(), postPostsReq);
             // 받은 body에서 userIdx 값과 postPostsReq를 service에 넘김김 - 이후 jwt로 userIdx를 받아올거기 때문에 그때 편리하게 하기 위해
             return new BaseResponse<>(postPostsRes);
+        } catch(BaseException exception){
+            logger.error("Error!", exception);
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @ResponseBody
+    @PatchMapping("/{postIdx}")
+    public BaseResponse<String> modifyPost(@PathVariable ("postIdx") int postIdx, @RequestBody PatchPostsReq patchPostsReq) { /
+        try{
+            // 내용 validation 체크
+            if(patchPostsReq.getContent().length() > 450){ // 게시글 길이 제한
+                return new BaseResponse<>(POST_POSTS_INVALID_CONTENTS);
+            }
+
+            postService.modifyPost(patchPostsReq.getUserIdx(), postIdx, patchPostsReq);
+            // userIdx를 따로 받는 이유는 이후 jwt 구현할 경우, 더 편하게 구현 가능
+
+            // 오류가 발생하지 않으면 다음 string 값 출력해주는 로직
+            String result = "회원 정보 수정을 완료하였습니다.";
+            return new BaseResponse<>(result);
+
         } catch(BaseException exception){
             logger.error("Error!", exception);
             return new BaseResponse<>((exception.getStatus()));
