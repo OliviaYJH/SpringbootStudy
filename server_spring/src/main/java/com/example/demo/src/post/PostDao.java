@@ -2,6 +2,7 @@ package com.example.demo.src.post;
 
 import com.example.demo.src.post.model.GetPostImgRes;
 import com.example.demo.src.post.model.GetPostsRes;
+import com.example.demo.src.post.model.PostImgUrlsReq;
 import com.example.demo.src.user.model.GetUserPostsRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -84,5 +85,27 @@ public class PostDao {
         return this.jdbcTemplate.queryForObject(checkUserExistQuery,
                 int.class,
                 checkUserExistParams);
+    }
+
+    public int insertPosts(int userIdx, String content){
+        String insertPostQuery = "INSERT INTO Post(userIdx, content) VALUES (?,?)";
+        Object []insertPostParams = new Object[] {userIdx, content};
+        // insert문은 return이 아니라 update를 해주는 것임
+        this.jdbcTemplate.update(insertPostQuery, insertPostParams); // data 들어감
+
+        // 함수 호출한 후, postIdx를 클라이언트에 전달
+        String lastInsertIdxQuery = "select last_insert_id()"; // 가장 마지막에 들어간 idx값을 자동으로 리턴해줌
+        return this.jdbcTemplate.queryForObject(lastInsertIdxQuery, int.class);
+    }
+
+    // 이미지 넣는 함수
+    public int insertPostImg(int postIdx, PostImgUrlsReq postImgUrlsReq){
+        String insertPostImgsQuery = "INSERT INTO PostImgUrl(postIdx, imgUrl) VALUES (?,?)";
+        Object []insertPostImgxParams = new Object[] {postIdx, postImgUrlsReq.getImgUrl()};
+        this.jdbcTemplate.update(insertPostImgsQuery, insertPostImgxParams); // data 들어감
+
+        // 함수 호출한 후, postIdx를 클라이언트에 전달
+        String lastInsertIdxQuery = "select last_insert_id()"; // 가장 마지막에 들어간 idx값을 자동으로 리턴해줌
+        return this.jdbcTemplate.queryForObject(lastInsertIdxQuery, int.class);
     }
 }
