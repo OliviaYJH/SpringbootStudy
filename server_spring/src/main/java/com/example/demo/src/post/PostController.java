@@ -80,6 +80,7 @@ public class PostController {
         }
     }
 
+    // 게시물 수정 api
     @ResponseBody
     @PatchMapping("/{postIdx}")
     public BaseResponse<String> modifyPost(@PathVariable ("postIdx") int postIdx, @RequestBody PatchPostsReq patchPostsReq) {
@@ -93,7 +94,25 @@ public class PostController {
             // userIdx를 따로 받는 이유는 이후 jwt 구현할 경우, 더 편하게 구현 가능
 
             // 오류가 발생하지 않으면 다음 string 값 출력해주는 로직
-            String result = "회원 정보 수정을 완료하였습니다.";
+            String result = "게시물 정보 수정을 완료하였습니다.";
+            return new BaseResponse<>(result);
+
+        } catch(BaseException exception){
+            logger.error("Error!", exception);
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    // 게시물 삭제 api
+    @ResponseBody
+    @PatchMapping("/{postIdx}/status")
+    public BaseResponse<String> deletePost(@PathVariable ("postIdx") int postIdx) {
+        try{
+            postService.deletePost(postIdx);
+            // userIdx를 따로 받는 이유는 이후 jwt 구현할 경우, 더 편하게 구현 가능
+
+            // 오류가 발생하지 않으면 다음 string 값 출력해주는 로직
+            String result = "게시물 삭제를 완료하였습니다.";
             return new BaseResponse<>(result);
 
         } catch(BaseException exception){

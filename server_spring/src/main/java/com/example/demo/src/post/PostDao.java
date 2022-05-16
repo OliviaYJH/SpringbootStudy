@@ -123,4 +123,11 @@ public class PostDao {
                 int.class,
                 checkPostExistParams);
     }
+
+    // 게시물 삭제
+    public int deletePost(int postIdx){
+        String deletePostQuery = "update Post set status = 'INACTIVE' where postIdx=?";
+        // Object[] deletePostParams = new Object[] {postIdx};
+        return this.jdbcTemplate.update(deletePostQuery, postIdx); // data 들어감
+    }
 }
