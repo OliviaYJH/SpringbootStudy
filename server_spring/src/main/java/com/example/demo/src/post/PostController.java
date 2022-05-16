@@ -82,7 +82,7 @@ public class PostController {
 
     @ResponseBody
     @PatchMapping("/{postIdx}")
-    public BaseResponse<String> modifyPost(@PathVariable ("postIdx") int postIdx, @RequestBody PatchPostsReq patchPostsReq) { /
+    public BaseResponse<String> modifyPost(@PathVariable ("postIdx") int postIdx, @RequestBody PatchPostsReq patchPostsReq) {
         try{
             // 내용 validation 체크
             if(patchPostsReq.getContent().length() > 450){ // 게시글 길이 제한

@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.example.demo.config.BaseResponseStatus.USERS_EMPTY_USER_ID;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @Service  // Create, Update, Delete 의 로직 처리
 public class PostService {
@@ -48,9 +47,25 @@ public class PostService {
     }
 
     public void modifyPost(int userIdx, int postIdx, PatchPostsReq patchPostsReq) throws BaseException {
+        // validation 체크
+
+        // user 존재 여부 확인
+        if(postProvider.checkUserExist(userIdx)==0){
+            throw new BaseException(USERS_EMPTY_USER_ID);
+        }
+
+        // post 체크
+        if(postProvider.checkPostExist(postIdx)==0){
+            throw new BaseException(POSTS_EMPTY_USER_ID);
+        }
+
         try{
             // postDao에서는 result 값 받 => postDao에서 update문이 잘 실행되면 result로 일을 전달하고 아니라면 0을 전달해 에러코드 전달
             int result = postDao.updatePosts(postIdx, patchPostsReq.getContent());
+
+            if(result == 0){
+                throw new BaseException(MODIFY_FAIL_POST);
+            }
 
             // void는 return 값 필요 없음
         }catch (Exception exception){
