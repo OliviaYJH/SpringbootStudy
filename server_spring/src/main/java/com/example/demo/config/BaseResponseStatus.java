@@ -38,6 +38,12 @@ public enum BaseResponseStatus {
     POST_USERS_EMPTY_PASSWORD(false, 2030, "비밀번호를 입력해주세요."),
     POST_USERS_INVALID_PASSWORD(false, 2031, "비밀번호 형식을 확인해주세요."),
 
+    POST_USERS_EMPTY_NAME(false, 2040, "이름을 입력해주세요."),
+    POST_USERS_INVALID_NAME(false, 2041, "이름의 형식을 확인해주세요."),
+
+    POST_USERS_EMPTY_NICKNAME(false, 2050, "닉네임을 입력해주세요."),
+    POST_USERS_INVALID_NICKNAME(false, 2051, "닉네임 형식을 확인해주세요."),
+
 
     /**
      * 3000 : Response 오류
