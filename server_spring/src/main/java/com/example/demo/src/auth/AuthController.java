@@ -56,6 +56,7 @@ public class AuthController {
             }
             return new BaseResponse<>(postLoginRes);
         }catch (BaseException exception){
+            logger.error("Error!", exception);
             return new BaseResponse<>((exception.getStatus()));
         }
     }

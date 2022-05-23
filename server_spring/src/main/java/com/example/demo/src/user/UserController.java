@@ -87,6 +87,7 @@ public class UserController {
             PostUserRes postUserRes = userService.createUser(postUserReq);
             return new BaseResponse<>(postUserRes);
         } catch(BaseException exception){
+            logger.error("Error!", exception);
             return new BaseResponse<>((exception.getStatus()));
         }
     }
