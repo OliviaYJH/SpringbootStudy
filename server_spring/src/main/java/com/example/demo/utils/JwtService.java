@@ -53,7 +53,7 @@ public class JwtService {
      */
     public int getUserIdx() throws BaseException{
         //1. JWT 추출
-        String accessToken = getJwt();
+        String accessToken = getJwt(); // header에서 jwt 받음
         if(accessToken == null || accessToken.length() == 0){
             throw new BaseException(EMPTY_JWT);
         }

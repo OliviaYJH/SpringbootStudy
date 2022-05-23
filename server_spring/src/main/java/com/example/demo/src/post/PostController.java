@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.POST_POSTS_EMPTY_IMGURL;
-import static com.example.demo.config.BaseResponseStatus.POST_POSTS_INVALID_CONTENTS;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("/posts")
@@ -59,7 +58,18 @@ public class PostController {
     @PostMapping("")
     public BaseResponse<PostPostsRes> createPosts(@RequestBody PostPostsReq postPostsReq) { // 생성한 글의 postIdx 반환
         // 반환값, 응답값: GetUserRes
+
         try{
+
+            // 회원용 api
+            int userIdxByJwt = jwtService.getUserIdx(); // header에서 jwt 받아 userIdx 추출
+            // userIdx 검증
+            if(postPostsReq.getUserIdx() != userIdxByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+
+
+
             // 형식적 validation 처리
             if(postPostsReq.getContent().length() > 450){ // 게시글 길이 제한
                 return new BaseResponse<>(POST_POSTS_INVALID_CONTENTS);
