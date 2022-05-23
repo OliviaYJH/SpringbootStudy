@@ -29,9 +29,11 @@ public class JwtService {
         return Jwts.builder()
                 .setHeaderParam("type","jwt")
                 .claim("userIdx",userIdx)
+                // payload에 userIdx를 담음
+                // 더 담고 싶은 정보가 있다면 추가해주기!
                 .setIssuedAt(now)
-                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365)))
-                .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
+                .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365))) // 만료기간
+                .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY) // 비밀번호를 인코딩해주는 비밀키
                 .compact();
     }
 
